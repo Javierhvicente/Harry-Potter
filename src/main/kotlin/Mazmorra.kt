@@ -1,30 +1,39 @@
 class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: Int = 6) {
-    private var mazmorra = Array(mapSize){ arrayOfNulls<Any>(mapSize)}
+    private var mazmorra = Array(mapSize) { arrayOfNulls<Any>(mapSize) }
     val harry = Harry()
-    val horrocurxes = Horrocurxes()
-    val dementor = Dementor()
-    val voldemort = Voldemort()
-    val bellatrix = Bellatrix()
-    val mcGonall = McGonall()
-    val hermione = Hermione()
-    val ron = Ron()
+    private val horrocurxes = Horrocurxes()
+    private val dementor = Dementor()
+    private val voldemort = Voldemort()
+    private val bellatrix = Bellatrix()
+    private val mcGonall = McGonall()
+    private val hermione = Hermione()
+    private val ron = Ron()
     private var horrDestruidos = 0
     private var dementoresEjecutados = 0
+    private var marked = false
+
     init {
         println("Bienvenido Harry")
         mazmorra[harry.fila][harry.columna] = Harry()
         mazmorra = inicializarMazmorra(mazmorra)
     }
 
-    fun aventura(){
-        do{
-            printMazmorra(mazmorra)
-            movimiento()
+    private fun isMarked(): Boolean {
+        if(!marked){
+            return false
+        }
+        return true
+    }
+
+    fun aventura() {
+        do {
+            printCamino(mazmorra)
+            juego()
             println("$horrDestruidos Horrocruxes destruidos")
             println("${harry.vida} puntos de vida")
             println("Dementores ejecutados: $dementoresEjecutados")
-        }while (horrDestruidos < 7 && harry.vida > 0)
-        if(harry.vida <= 0){
+        } while (horrDestruidos < 7 && harry.vida > 0)
+        if (harry.vida <= 0) {
             println("Harry Potter ha muerto en combate")
         }
         println("Harry ha conseguido salir de la mazmorra con vida y ha cunplido su misión de acabar con los siete Horrocruxes")
@@ -32,106 +41,125 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
     }
 
     private fun accion(fila: Int, columna: Int) {
-        when (mazmorra[fila][columna]){
-            is Voldemort ->{
+        when (mazmorra[fila][columna]) {
+            is Voldemort -> {
                 println("Harry se ha encontrado a Voldemort")
-                do{
+                do {
                     val random = (0..100).random()
-                    if(random > 60){
+                    if (random > 60) {
                         println("Harry ha fallado")
                         voldemort.contraAtaque()
                         harry.vida -= voldemort.contraAtaque
+                    }else{
+                        println("Harry acierta el hechizo y voldemort huye")
+                        mazmorra[fila][columna] = Harry()
+                        colocarPosAleatoria(Voldemort(), mazmorra)
                     }
-                    println("Harry acierta el hechizo y voldemort huye")
-                    mazmorra[fila][columna] = Harry()
-                    colocarPosAleatoria(Voldemort(), mazmorra)
-                }while (random > 60)
+                } while (random > 60 && harry.vida > 0)
             }
-            is Bellatrix ->{ println("Harry se ha encontrado a Bellatrix")
-                do{
+
+            is Bellatrix -> {
+                println("Harry se ha encontrado a Bellatrix")
+                do {
                     val random = (0..100).random()
-                    if(random > 60){
+                    if (random > 60) {
                         println("Harry ha fallado")
                         bellatrix.contraAtaque()
                         harry.vida -= bellatrix.contraAtaque
+                    }else{
+                        println("Harry acierta el hechizo y Bellatrix huye")
+                        mazmorra[fila][columna] = Harry()
+                        colocarPosAleatoria(Bellatrix(), mazmorra)
                     }
-                    println("Harry acierta el hechizo y Bellatrix huye")
-                    mazmorra[fila][columna] = Harry()
-                    colocarPosAleatoria(Bellatrix(), mazmorra)
-                }while (random > 60)
+
+                } while (random > 60 && harry.vida > 0)
             }
-            is Dementor ->{
-                do{
+
+            is Dementor -> {
+                do {
                     val random = (0..100).random()
-                    if(random > 60){
+                    if (random > 60) {
                         println("Harry ha fallado")
                         dementor.contraAtaque()
                         harry.vida -= dementor.contraAtaque
+                    }else{
+                        println("Harry acierta el hechizo y ejecuta al dementor")
+                        dementoresEjecutados++
+                        mazmorra[fila][columna] = Harry()
                     }
-                    println("Harry acierta el hechizo y ejecuta al dementor")
-                    dementoresEjecutados++
-                    mazmorra[fila][columna] = Harry()
-                }while (random > 60)
+
+                } while (random > 60 && harry.vida > 0)
             }
+
             is Horrocurxes -> {
                 println("Harry ha destruido un horrocrux")
                 horrDestruidos++
                 mazmorra[fila][columna] = Harry()
             }
-            is McGonall ->{
-                if(harry.vida >= 100){
+
+            is McGonall -> {
+                if (harry.vida >= 100) {
                     println("Harry ya tienes toda la vida")
                     mazmorra[fila][columna] = McGonall()
-                }else{
+                    marked = true
+                    isMarked()
+                } else {
                     println("McGonall cura las heridas de Harry con un hechizo")
                     harry.vida += mcGonall.curacion
                 }
             }
-            is Hermione ->{
-                if(harry.vida >= 100){
+
+            is Hermione -> {
+                if (harry.vida >= 100) {
                     println("Harry ya tienes toda la vida lokete")
                     mazmorra[fila][columna] = Hermione()
-                }else{
+                    marked = true
+                    isMarked()
+                } else {
                     println("Hermione cura las heridas de Harry con un hechizo")
                     harry.vida += hermione.curacion
                 }
             }
-            is Ron ->{
-                if(harry.vida >= 100){
+
+            is Ron -> {
+                if (harry.vida >= 100) {
                     println("Harry que tienes toda la vida calla ya ")
                     mazmorra[fila][columna] = Ron()
-                }else{
-                    if((0..100).random() < 30){
+                    marked = true
+                    isMarked()
+                } else {
+                    if ((0..100).random() < 30) {
                         println("Ron ha metido la pata y ha fallado la curación haciendo daño a harry")
                         harry.vida -= 10
-                    }else{
+                    } else {
                         println("Ron cura las heridas de Harry con un hechizo")
                         harry.vida += ron.curacion
                     }
                 }
             }
+            true -> mazmorra[fila][columna] = Harry()
             null -> mazmorra[fila][columna] = Harry()
         }
     }
 
-    private fun movimiento(){
+    private fun juego() {
         var nuevaFila = harry.fila
         var nuevaCol = harry.columna
         println("¿Harry hacia donde quieres ir?")
         println(
             "N" +
-            "\nS" +
-            "\nW" +
-            "\nE"
+                    "\nS" +
+                    "\nW" +
+                    "\nE"
         )
         val direccion = readln().trim().uppercase()
-        if(direccion != "N" && direccion != "S" && direccion != "W" && direccion != "E"){
+        if (direccion != "N" && direccion != "S" && direccion != "W" && direccion != "E") {
             println("Solo puedes moverte en las direcciones N, S, W, E.")
-        }else{
-            if(mazmorra[harry.fila][harry.columna]==Harry()){ //si pongo igual a null me quita los harrys
-                mazmorra[harry.fila][harry.columna]= null
+        } else {
+            if (mazmorra[harry.fila][harry.columna] is Harry) {
+                mazmorra[harry.fila][harry.columna] = true
             }
-            when(direccion) {
+            when (direccion) {
                 "N" -> if (harry.fila > 0) {
                     nuevaFila--
                 }
@@ -153,13 +181,14 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
         harry.columna = nuevaCol
         accion(harry.fila, harry.columna)
 
+
     }
 
     private fun inicializarMazmorra(mazmorra: Array<Array<Any?>>): Array<Array<Any?>> {
-        repeat(numHolo){
+        repeat(numHolo) {
             colocarPosAleatoria(Horrocurxes(), mazmorra)
         }
-        repeat(numDementors){
+        repeat(numDementors) {
             colocarPosAleatoria(Dementor(), mazmorra)
         }
         colocarPosAleatoria(Voldemort(), mazmorra)
@@ -170,21 +199,21 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
         return mazmorra
     }
 
-    private fun colocarPosAleatoria(item: Any, mazmorra: Array<Array<Any?>>): Array<Array<Any?>>{
+    private fun colocarPosAleatoria(item: Any, mazmorra: Array<Array<Any?>>): Array<Array<Any?>> {
         var fila: Int
         var columna: Int
-        do{
-            fila = (0..mazmorra.size -1).random()
-            columna = (0..mazmorra.size -1).random()
-        }while (mazmorra[fila][columna] != null)
+        do {
+            fila = (0..mazmorra.size - 1).random()
+            columna = (0..mazmorra.size - 1).random()
+        } while (mazmorra[fila][columna] != null)
         mazmorra[fila][columna] = item
         return mazmorra
     }
 
-    private fun printMazmorra(mazmorra: Array<Array<Any?>>){
-        for(i in mazmorra.indices){
-            for(j in mazmorra[i].indices){
-                when(mazmorra[i][j]){
+    private fun printMazmorra(mazmorra: Array<Array<Any?>>) {
+        for (i in mazmorra.indices) {
+            for (j in mazmorra[i].indices) {
+                when (mazmorra[i][j]) {
                     is Harry -> print("[ \uD83E\uDD13 ]")
                     is Horrocurxes -> print("[ \uD83D\uDD2E ]")
                     is Dementor -> print("[ \uD83D\uDC7B ]")
@@ -201,4 +230,44 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
         println()
     }
 
+    private fun printCamino(mazmorra: Array<Array<Any?>>) {
+        for (i in mazmorra.indices) {
+            for (j in mazmorra[i].indices) {
+                when (mazmorra[i][j]) {
+                    is Harry -> print("[ \uD83E\uDD13 ]")
+                    is McGonall ->{
+                        if(!isMarked()){
+                            print("[ ? ]")
+                        }else{
+                            print("[ \uD83E\uDDD9 ]")
+
+                        }
+                    }
+                    is Hermione ->{
+                        if(!isMarked()){
+                            print("[ ? ]")
+                        }else{
+                            print("[ \uD83E\uDDD9\u200D♀\uFE0F ]")
+
+                        }
+                    }
+                    is Ron ->{
+                        if(!isMarked()){
+                            print("[ ? ]")
+                        }else{
+                            print("[ \uD83D\uDC68\u200D\uD83E\uDDB0]")
+
+                        }
+                    }
+                    true -> print("[   ]")
+                    else -> print("[ ? ]")
+                }
+            }
+            println()
+        }
+        println()
+    }
 }
+
+
+
