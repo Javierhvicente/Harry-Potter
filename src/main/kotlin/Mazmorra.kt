@@ -101,11 +101,11 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                 if (harry.vida >= 100) {
                     println("Harry ya tienes toda la vida")
                     mazmorra[fila][columna] = McGonall()
-                    marked = true
-                    isMarked()
+                    mcGonall.cambiarVista(mcGonall.vista)
                 } else {
                     println("McGonall cura las heridas de Harry con un hechizo")
                     harry.vida += mcGonall.curacion
+                    mazmorra[fila][columna] = Harry()
                 }
             }
 
@@ -113,11 +113,11 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                 if (harry.vida >= 100) {
                     println("Harry ya tienes toda la vida lokete")
                     mazmorra[fila][columna] = Hermione()
-                    marked = true
-                    isMarked()
+                    hermione.cambiarVista(hermione.vista)
                 } else {
                     println("Hermione cura las heridas de Harry con un hechizo")
                     harry.vida += hermione.curacion
+                    mazmorra[fila][columna] = Harry()
                 }
             }
 
@@ -125,7 +125,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                 if (harry.vida >= 100) {
                     println("Harry que tienes toda la vida calla ya ")
                     mazmorra[fila][columna] = Ron()
-                    marked = true
+                    ron.cambiarVista(ron.vista)
                     isMarked()
                 } else {
                     if ((0..100).random() < 30) {
@@ -134,6 +134,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                     } else {
                         println("Ron cura las heridas de Harry con un hechizo")
                         harry.vida += ron.curacion
+                        mazmorra[fila][columna] = Harry()
                     }
                 }
             }
@@ -221,7 +222,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                     is Bellatrix -> print("[ \uD83D\uDC80 ]")
                     is McGonall -> print("[ \uD83E\uDDD9 ]")
                     is Hermione -> print("[ \uD83E\uDDD9\u200D♀\uFE0F ]")
-                    is Ron -> print("[ \uD83D\uDC68\u200D\uD83E\uDDB0]")
+                    is Ron -> print("[ \uD83D\uDC68\u200D\uD83E\uDDB0 ]")
                     else -> print("[     ]")
                 }
             }
@@ -236,7 +237,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                 when (mazmorra[i][j]) {
                     is Harry -> print("[ \uD83E\uDD13 ]")
                     is McGonall ->{
-                        if(!isMarked()){
+                        if(!mcGonall.vista){
                             print("[ ? ]")
                         }else{
                             print("[ \uD83E\uDDD9 ]")
@@ -244,7 +245,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                         }
                     }
                     is Hermione ->{
-                        if(!isMarked()){
+                        if(!hermione.vista){
                             print("[ ? ]")
                         }else{
                             print("[ \uD83E\uDDD9\u200D♀\uFE0F ]")
@@ -252,10 +253,10 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                         }
                     }
                     is Ron ->{
-                        if(!isMarked()){
+                        if(!ron.vista){
                             print("[ ? ]")
                         }else{
-                            print("[ \uD83D\uDC68\u200D\uD83E\uDDB0]")
+                            print("[ \uD83D\uDC68\u200D\uD83E\uDDB0 ]")
 
                         }
                     }
