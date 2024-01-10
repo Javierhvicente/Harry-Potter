@@ -1,3 +1,5 @@
+package models
+
 class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: Int = 6) {
     private var mazmorra = Array(mapSize) { arrayOfNulls<Any>(mapSize) }
     val harry = Harry()
@@ -18,15 +20,9 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
         mazmorra = inicializarMazmorra(mazmorra)
     }
 
-    private fun isMarked(): Boolean {
-        if(!marked){
-            return false
-        }
-        return true
-    }
-
     fun aventura() {
         do {
+            printMazmorra(mazmorra)
             printCamino(mazmorra)
             juego()
             println("$horrDestruidos Horrocruxes destruidos")
@@ -43,7 +39,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
     private fun accion(fila: Int, columna: Int) {
         when (mazmorra[fila][columna]) {
             is Voldemort -> {
-                println("Harry se ha encontrado a Voldemort")
+                println("Harry se ha encontrado a models.Voldemort")
                 do {
                     val random = (0..100).random()
                     if (random > 60) {
@@ -53,7 +49,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                     }else{
                         println("Harry acierta el hechizo y voldemort huye")
                         mazmorra[fila][columna] = Harry()
-                        colocarPosAleatoria(Voldemort(), mazmorra)
+                        teletransporte(voldemort,mazmorra)
                     }
                 } while (random > 60 && harry.vida > 0)
             }
@@ -103,7 +99,7 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                     mazmorra[fila][columna] = McGonall()
                     mcGonall.cambiarVista(mcGonall.vista)
                 } else {
-                    println("McGonall cura las heridas de Harry con un hechizo")
+                    println("models.McGonall cura las heridas de Harry con un hechizo")
                     harry.vida += mcGonall.curacion
                     mazmorra[fila][columna] = Harry()
                 }
@@ -126,7 +122,6 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                     println("Harry que tienes toda la vida calla ya ")
                     mazmorra[fila][columna] = Ron()
                     ron.cambiarVista(ron.vista)
-                    isMarked()
                 } else {
                     if ((0..100).random() < 30) {
                         println("Ron ha metido la pata y ha fallado la curación haciendo daño a harry")
@@ -210,6 +205,19 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
         mazmorra[fila][columna] = item
         return mazmorra
     }
+    private fun teletransporte(item: Any, mazmorra: Array<Array<Any?>>): Array<Array<Any?>> {
+        var fila: Int
+        var columna: Int
+        do {
+            fila = (0..mazmorra.size - 1).random()
+            columna = (0..mazmorra.size - 1).random()
+        } while (mazmorra[fila][columna] != null && mazmorra[fila][columna] != true)
+        when(mazmorra[fila][columna]){
+            true -> voldemort.cambiarVista(voldemort.vista)
+        }
+        mazmorra[fila][columna] = item
+        return mazmorra
+    }
 
     private fun printMazmorra(mazmorra: Array<Array<Any?>>) {
         for (i in mazmorra.indices) {
@@ -258,6 +266,13 @@ class Mazmorra (val mapSize: Int = 6, val numHolo: Int = 7, val numDementors: In
                         }else{
                             print("[ \uD83D\uDC68\u200D\uD83E\uDDB0 ]")
 
+                        }
+                    }
+                    is Voldemort ->{
+                        if(!voldemort.vista){
+                            print("[ ? ]")
+                        }else{
+                            print("[ \uD83D\uDC7D ]")
                         }
                     }
                     true -> print("[   ]")

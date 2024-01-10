@@ -1,2 +1,4 @@
+package models
+
 class Horrocurxes {
 }
