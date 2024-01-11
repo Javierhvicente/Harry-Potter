@@ -31,7 +31,6 @@ class Mazmorra (val mapSize: Int = 6, val numHorro: Int = 7, val numDementors: I
      */
     fun aventura() {
         do {
-            printMazmorra(mazmorra)
             printCamino(mazmorra)
             juego()
             println("$horrDestruidos Horrocruxes destruidos")
@@ -146,27 +145,6 @@ class Mazmorra (val mapSize: Int = 6, val numHorro: Int = 7, val numDementors: I
         return mazmorra
     }
 
-    //TODO Borrar antes de enviar
-    private fun printMazmorra(mazmorra: Array<Array<Any?>>) {
-        for (i in mazmorra.indices) {
-            for (j in mazmorra[i].indices) {
-                when (mazmorra[i][j]) {
-                    is Harry -> print("[ \uD83E\uDD13 ]")
-                    is Horrocurxes -> print("[ \uD83D\uDD2E ]")
-                    is Dementor -> print("[ \uD83D\uDC7B ]")
-                    is Voldemort -> print("[ \uD83D\uDC7D ]")
-                    is Bellatrix -> print("[ \uD83D\uDC80 ]")
-                    is McGonall -> print("[ \uD83E\uDDD9 ]")
-                    is Hermione -> print("[ 🧝‍♀️ ]")
-                    is Ron -> print("[ \uD83D\uDC68\u200D\uD83E\uDDB0 ]")
-                    else -> print("[     ]")
-                }
-            }
-            println()
-        }
-        println()
-    }
-
     /**
      * Imprime la matriz como si estuviera oculta, y solo muestra las posiciones por las que pasa Harry
      * @param mazmorra la matriz
@@ -188,7 +166,7 @@ class Mazmorra (val mapSize: Int = 6, val numHorro: Int = 7, val numDementors: I
                         if(!hermione.vista){
                             print("[ ? ]")
                         }else{
-                            print("[ \u200D ]")
+                            print("[ 🧝‍♀️ ]")
 
                         }
                     }
