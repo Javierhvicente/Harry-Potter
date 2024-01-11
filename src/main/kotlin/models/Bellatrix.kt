@@ -51,14 +51,14 @@ class Bellatrix(nombre: String ="Bellatrix", contraAtaque: Int = 30) : Enemigo(n
      * @param columna la columna en la cual está Harry
      */
     fun interacción(mazmorra: Mazmorra ,mazmorraMatriz: Array<Array<Any?>>, fila: Int, columna: Int){
-        println("Harry se ha encontrado a Voldemort")
+        println("Harry se ha encontrado a Bellatrix")
         do {
             val random = (0..100).random()
             if (random > 60) {
                 println("Harry ha fallado")
                 mazmorra.harry.vida -= contraAtaque()
             }else{
-                println("Harry acierta el hechizo y voldemort huye")
+                println("Harry acierta el hechizo y Bellatrix huye")
                 mazmorraMatriz[fila][columna] = Harry()
                 teletransporte(mazmorraMatriz)
             }

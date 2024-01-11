@@ -157,7 +157,7 @@ class Mazmorra (val mapSize: Int = 6, val numHorro: Int = 7, val numDementors: I
                     is Voldemort -> print("[ \uD83D\uDC7D ]")
                     is Bellatrix -> print("[ \uD83D\uDC80 ]")
                     is McGonall -> print("[ \uD83E\uDDD9 ]")
-                    is Hermione -> print("[ \uD83E\uDDD9\u200D♀\uFE0F ]")
+                    is Hermione -> print("[ 🧝‍♀️ ]")
                     is Ron -> print("[ \uD83D\uDC68\u200D\uD83E\uDDB0 ]")
                     else -> print("[     ]")
                 }
@@ -188,7 +188,7 @@ class Mazmorra (val mapSize: Int = 6, val numHorro: Int = 7, val numDementors: I
                         if(!hermione.vista){
                             print("[ ? ]")
                         }else{
-                            print("[ \uD83E\uDDD9\u200D♀\uFE0F ]")
+                            print("[ \u200D ]")
 
                         }
                     }

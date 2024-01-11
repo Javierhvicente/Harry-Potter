@@ -1,5 +1,11 @@
 package models
 
+/**
+ * Aliado Ron cura a Harry cuando esté herido y hay un 30% de posibilidades de que falle y le haga daño
+ * @property nombre Ron
+ * @property vida la vida del objeto
+ * @property curacion la cantidad de vida que cura su curación
+ */
 class Ron(nombre: String = "Ron", vida: Int = 1, private var curacion: Int = 20) : Aliado(nombre, vida), Visibilidad {
     override var vista: Boolean = false
     /**
